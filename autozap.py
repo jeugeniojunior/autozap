@@ -27,9 +27,10 @@ def enviar():
         texto = urllib.parse.quote(f"Oi {pessoa}! {mensagem} {formulario}")
         link = f"https://web.whatsapp.com/send?phone={numero}&text={texto}"
         navegador.get(link)
-        while len(navegador.find_elements(By.ID, "side")) < 1:
+        time.sleep(5)
+        while len(navegador.find_elements(By.XPATH, '//*[@id="main"]/footer/div[1]/div/span[2]/div/div[2]/div[1]/div/div[2]')) < 1:
             time.sleep(1)
-        navegador.find_element(By.XPATH, '//*[@id="main"]/footer/div[1]/div/span[2]/div/div[2]/div[2]/button/span').click()
+        navegador.find_element(By.XPATH, '//*[@id="main"]/footer/div[1]/div/span[2]/div/div[2]/div[1]/div/div[2]').send_keys(Keys.ENTER)
         print('Enviada mensagem com sucesso!')
         time.sleep(10)
     print('Fim do Processo!')
