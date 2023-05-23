@@ -5,12 +5,18 @@ from selenium.webdriver.common.keys import Keys
 import time
 import urllib
 from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
+
+
+def atualizar_chromedriver():
+    options = webdriver.ChromeOptions()
+    d = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=options)
 
 def enviar():
     contatos_df = pd.read_excel('date.xlsx')
     print(contatos_df)
 
-    navegador = webdriver.Chrome()
+    navegador = webdriver.Chrome(ChromeDriverManager().install())
     navegador.get('https://web.whatsapp.com/')
 
     while len(navegador.find_elements(By.ID,"side")) < 1:
@@ -19,12 +25,12 @@ def enviar():
 
     print('Login Efetuado com sucesso!')
 
-    # já estamos com o login feito no whatsapp web
-    for i, mensagem in enumerate(contatos_df['mensagem']):
+    for i, mensagem in enumerate(contatos_df['pessoa']):
         pessoa = contatos_df.loc[i, "pessoa"]
         numero = contatos_df.loc[i, "numero"]
-        formulario = 'https://forms.gle/cg1dnuNrufe4AsNK8'
-        texto = urllib.parse.quote(f"Oi {pessoa}! {mensagem} {formulario}")
+        valor = contatos_df.loc[i, "valor"]
+
+        texto = urllib.parse.quote(f"Oi {pessoa}! Como já sabe estamos finalizando nossa operação e fazendo todos os nossos balanços financeiro identificamos uma pendência no valor de R$ {valor}. Seria possível ralizar o pagamento desse valor em aberto? O pix para pagamento é o nosso telefone: 32991170287. Favor enviar o comprovante do pix para que possamos dar baixa nos nossos controle. Desde já agradeçemos!")
         link = f"https://web.whatsapp.com/send?phone={numero}&text={texto}"
         navegador.get(link)
         time.sleep(5)
@@ -34,6 +40,10 @@ def enviar():
         print('Enviada mensagem com sucesso!')
         time.sleep(10)
     print('Fim do Processo!')
+
+#atualizar_chromedriver()
+
+print()
 
 enviar()
 
